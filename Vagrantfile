@@ -67,7 +67,12 @@ Vagrant::Config.run do |config|
     chef.add_recipe "centos"
   end
 
-  config.vm.provision :shell, :inline => '/vagrant/dev_setup/lib/chefsolo_launch.rb -d /vagrant'
+  config.vm.provision :shell do |shell|
+    require 'yaml'
+    File.open(".deployment.yml", "w") {|f| f << YAML::dump("cloudfoundry" => { "path" => "/vagrant" }) }
+    at_exit { File.unlink(".deployment.yml") }
+    shell.inline = '/vagrant/dev_setup/lib/chefsolo_launch.rb -c /vagrant/.deployment.yml'
+  end
 
   # Enable provisioning with chef server, specifying the chef server URL,
   # and the path to the validation key (relative to this Vagrantfile).
