@@ -1,3 +1,7 @@
+#
+# These resources are prerequisites for running
+# dev_setup/lib/chefsolo_launch.rb on CentOS.
+#
 
 require_recipe 'centos::start_stop_daemon'
 
@@ -9,6 +13,8 @@ bash "Update RubyGems to 1.8.x" do
   }
   not_if { `gem --version` =~ /^1\.8\./ }
 end
+
+gem_package "rake"
 
 # FIXME: These steps may be specific to the particular CentOS 6.2
 # image we're using
@@ -36,5 +42,3 @@ ruby_block "Fix gemspecs with invalid date formats" do
     end
   end
 end
-
-gem_package "rake"
