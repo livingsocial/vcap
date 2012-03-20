@@ -67,6 +67,8 @@ Vagrant::Config.run do |config|
     chef.add_recipe "centos"
   end
 
+  config.vm.provision :shell, :inline => '/vagrant/dev_setup/lib/chefsolo_launch.rb -d /vagrant'
+
   # Enable provisioning with chef server, specifying the chef server URL,
   # and the path to the validation key (relative to this Vagrantfile).
   #
