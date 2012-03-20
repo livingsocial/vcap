@@ -4,7 +4,15 @@ module RubyInstall
     bundler_version = node[:rubygems][:bundler][:version]
     rake_version = node[:rubygems][:rake][:version]
 
-    %w[ build-essential libssl-dev zlib1g-dev libreadline5-dev libxml2-dev libpq-dev].each do |pkg|
+    packages = \
+    case node['platform']
+    when "ubuntu"
+      %w[ build-essential libssl-dev zlib1g-dev libreadline5-dev libxml2-dev libpq-dev]
+    else
+      []
+    end
+
+    packages.each do |pkg|
       package pkg
     end
 
