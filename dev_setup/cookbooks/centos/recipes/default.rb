@@ -1,10 +1,12 @@
 
+require_recipe 'centos::start_stop_daemon'
+
 package "git"
 
 bash "Update RubyGems to 1.8.x" do
   code %{
-gem update --system
-}
+    gem update --system
+  }
   not_if { `gem --version` =~ /^1\.8\./ }
 end
 
@@ -12,10 +14,10 @@ end
 # image we're using
 bash "Move rubygems to /usr/lib64/ruby" do
   code %{
-mv /usr/lib{,64}/ruby/gems
-# Make sure all gems are pristine
-gem pristine --all
-}
+    mv /usr/lib{,64}/ruby/gems
+    # Make sure all gems are pristine
+    gem pristine --all
+  }
   not_if { File.directory? "/usr/lib64/ruby/gems/1.8" }
 end
 
