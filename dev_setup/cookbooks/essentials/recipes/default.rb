@@ -9,9 +9,11 @@
 packages = \
 case node['platform']
 when "ubuntu"
-%w{apt-utils build-essential libssl-dev
+  %w{apt-utils build-essential libssl-dev
    libxml2 libxml2-dev libxslt1.1 libxslt1-dev git-core sqlite3 libsqlite3-ruby
    libsqlite3-dev unzip zip ruby-dev libmysql-ruby libmysqlclient-dev libcurl4-openssl-dev libpq-dev}
+when "centos"
+  %w{unzip zip mysql mysql-devel}
 else
   []
 end
