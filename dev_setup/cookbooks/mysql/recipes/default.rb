@@ -30,10 +30,21 @@ when "ubuntu"
     notifies :restart, "service[mysql]"
   end
 
-  service "mysql" do
-    supports :status => true, :restart => true, :reload => true
-    action [ :enable, :start ]
+when "centos"
+  package "mysql"
+  package "mysql-devel"
+  package "mysql-server"
+
+  execute "assign-root-password" do
+    command "mysqladmin -u root password \"#{node[:mysql][:server_root_password]}\""
+    action :run
+    only_if "mysql -u root -e 'show databases;'"
   end
 else
   Chef::Log.error("Installation of mysql not supported on this platform.")
+end
+
+service "mysql" do
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable, :start ]
 end
