@@ -1,4 +1,6 @@
+include_attribute "deployment"
 include_attribute "postgresql"
+
 default[:acmdb][:user] = "root"
 default[:acmdb][:password] = "changeme"
 default[:acmdb][:database] = "acm"
