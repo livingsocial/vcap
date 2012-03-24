@@ -20,11 +20,6 @@ directory nats_config_dir do
   notifies :restart, "service[nats_server]"
 end
 
-service "nats_server" do
-  supports :status => true, :restart => true, :reload => true
-  action [ :enable, :start ]
-end
-
 case node['platform']
 when "ubuntu", "centos"
   template "nats_server" do
@@ -36,6 +31,11 @@ when "ubuntu", "centos"
   end
 else
   Chef::Log.error("Installation of nats_server not supported on this platform.")
+end
+
+service "nats_server" do
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable, :start ]
 end
 
 template "nats_server.yml" do
