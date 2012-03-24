@@ -5,12 +5,13 @@
 # Copyright 2011, VMware
 #
 #
-package "python-software-properties"
 
 case node['platform']
 when "ubuntu"
+  package 'python-software-properties'
   package 'default-jdk'
-# FIXME: add other major distro support
+when "centos"
+  package 'java-1.6.0-openjdk'
 else
   Chef::Log.error("Installation of Sun Java packages not supported on this platform.")
 end
