@@ -1,0 +1,88 @@
+#! /bin/sh
+#
+# nats_server init script
+#
+# Author: Ben Bleything <ben.bleything@livingsocial.com>
+#
+### BEGIN INIT INFO
+# Provides:          nats_server
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Description:       Starts the nats message bus server
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source local configuration if available
+[ -f /etc/sysconfig/nats_server ] && . /etc/sysconfig/nats_server
+
+PATH=<%= File.join(node[:ruby][:path], "bin") %>:/sbin:/usr/sbin:/bin:/usr/bin
+DAEMON=<%= File.join(node[:ruby][:path], "bin", "nats-server") %>
+DAEMON_ARGS="-d -c <%= node[:nats_server][:config] %>"
+
+RETVAL=0
+PIDFILE=/var/run/nats_server.pid
+
+start() {
+    [ -x $DAEMON ] || exit 5
+
+    echo -n $"Starting nats_server: "
+    daemon --pidfile="$PIDFILE" $DAEMON $DAEMON_ARGS
+}
+
+stop() {
+    echo -n $"Shutting down nats_server: "
+    killproc -p "$PIDFILE" $DAEMON
+}
+
+reload() {
+    RETVAL=1
+    pid=$(cat "${PIDFILE}" 2> /dev/null)
+    echo -n "Reloading nats_server... "
+    if [ -n "${pid}" ] && [ -e /proc/"${pid}" ]; then
+        kill -HUP "$pid";
+        RETVAL=$?
+    fi
+
+    if [ $RETVAL -ne 0 ]; then
+        failure
+    else
+        success
+    fi
+
+    echo
+    return $RETVAL
+}
+
+restart() {
+    stop
+    start
+}
+
+nsstatus() {
+    status -p "$PIDFILE" -l nats_server $DAEMON
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        restart
+        ;;
+    reload)
+        reload
+        ;;
+    status)
+        nsstatus
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 2
+esac
+
+exit $?

@@ -26,7 +26,7 @@ service "nats_server" do
 end
 
 case node['platform']
-when "ubuntu"
+when "ubuntu", "centos"
   template "nats_server" do
     path File.join("", "etc", "init.d", "nats_server")
     source "nats_server.erb"
