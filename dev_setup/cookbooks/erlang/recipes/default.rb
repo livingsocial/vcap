@@ -5,8 +5,13 @@
 # Copyright 2011, VMware
 #
 #
-%w[ build-essential libncurses5-dev openssl libssl-dev ].each do |pkg|
-  package pkg
+
+case node['platform']
+when 'ubuntu'
+  %w[ build-essential libncurses5-dev openssl libssl-dev ].each do |pkg|
+    package pkg
+  end
+when 'centos'
 end
 
 remote_file File.join("", "tmp", "otp_src_#{node[:erlang][:version]}.tar.gz") do
