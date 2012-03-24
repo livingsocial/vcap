@@ -5,8 +5,17 @@
 # Copyright 2011, VMWARE
 #
 #
-%w{lsof psmisc librmagick-ruby}.each do |pkg|
+
+%w{lsof psmisc}.each do |pkg|
   package pkg
+end
+
+case node['platform']
+when 'ubuntu'
+  package 'librmagick-ruby'
+when 'centos'
+  package 'ImageMagick-devel'
+  gem_package 'rmagick'
 end
 
 node[:dea][:runtimes].each do |runtime|
