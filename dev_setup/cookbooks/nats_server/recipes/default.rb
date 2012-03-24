@@ -20,6 +20,14 @@ directory nats_config_dir do
   notifies :restart, "service[nats_server]"
 end
 
+template "nats_server.yml" do
+  path node[:nats_server][:config]
+  source "nats_server.yml.erb"
+  owner node[:deployment][:user]
+  mode 0644
+  notifies :restart, "service[nats_server]"
+end
+
 case node['platform']
 when "ubuntu", "centos"
   template "nats_server" do
@@ -36,12 +44,4 @@ end
 service "nats_server" do
   supports :status => true, :restart => true, :reload => true
   action [ :enable, :start ]
-end
-
-template "nats_server.yml" do
-  path node[:nats_server][:config]
-  source "nats_server.yml.erb"
-  owner node[:deployment][:user]
-  mode 0644
-  notifies :restart, "service[nats_server]"
 end
