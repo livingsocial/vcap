@@ -1,8 +1,6 @@
 module NodeInstall
   def cf_node_install(node_version, node_source, node_path)
-    %w[ build-essential ].each do |pkg|
-      package pkg
-    end
+    package('build-essential') if node['platform'] == 'ubuntu'
 
     remote_file File.join("", "tmp", "node-v#{node_version}.tar.gz") do
       owner node[:deployment][:user]
