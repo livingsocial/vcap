@@ -7,6 +7,7 @@ require 'fileutils'
 require 'optparse'
 require 'yaml'
 require 'pp'
+require 'etc'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
@@ -114,7 +115,9 @@ Dir.mktmpdir do |tmpdir|
         end
       end
     end
-    exec("sudo env #{proxy_env.join(" ")} chef-solo -c #{File.join(tmpdir, "solo.rb")} -j #{json_attribs} -l debug")
+    sudo = "sudo "
+    sudo = "" if Etc.getpwuid.uid == 0 # Don't need sudo if we're already root
+    exec("#{sudo}env #{proxy_env.join(" ")} chef-solo -c #{File.join(tmpdir, "solo.rb")} -j #{json_attribs} -l debug")
   end
 
   pid, status = Process.waitpid2(id)
